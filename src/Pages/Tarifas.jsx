@@ -1,0 +1,260 @@
+import React from 'react'
+import {Container, Button, Col, Row } from 'react-bootstrap/';
+import '../Styles/Tarifas.css'
+import { loadStripe } from '@stripe/stripe-js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
+
+
+//imagenes
+import fondo1 from '../assets/Fondo1.jpg'
+import roco4 from '../assets/roco4.jpg'
+import roco1 from '../assets/roco1.jpg'
+
+
+
+function Tarifas() {
+
+  const stripePromise = loadStripe('pk_test_51QcqgCQG9VO4iB056SAGDlNBtSlQz3ehdXSEumIduMFBOFwjRGZneW4jfghps0vfrk7S9c2KVCSnkp9sFMYJjxjS00oCVBOAwZ'); 
+
+  const handleCheckout = async (priceId, name) => {
+    const stripe = await stripePromise;
+  
+    // Asegurémonos de que los datos enviados son correctos
+    const items = [
+      {
+        name,
+        priceId: priceId, 
+        quantity: 1,
+      },
+    ];
+  
+    try {
+      const response = await fetch('http://localhost:3001/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ items }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error al crear la sesión de pago');
+      }
+  
+      const session = await response.json();
+      
+      // Redirigir al usuario a Stripe
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
+  
+      if (error) {
+        console.error('Error al redirigir al checkout: ', error);
+      }
+    } catch (error) {
+      console.error('Error en el frontend al crear la sesión de pago:', error);
+    }
+  };
+
+  // Función para manejar la suscripción
+  const handleCheckoutSubscription = async (priceId, name) => {
+    const stripe = await stripePromise;
+  
+    const items = [
+      {
+        name,
+        priceId: priceId,
+        quantity: 1,
+      },
+    ];
+  
+    try {
+      // Enviar la solicitud al backend para crear la sesión de suscripción
+      const response = await fetch('http://localhost:3001/create-checkout-session-subscription', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ items }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error al crear la sesión de suscripción');
+      }
+  
+      const session = await response.json();
+  
+      // Redirigir al usuario a Stripe Checkout
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
+  
+      if (error) {
+        console.error('Error al redirigir al checkout:', error);
+      }
+    } catch (error) {
+      console.error('Error en el frontend al crear la sesión de suscripción:', error);
+    }
+  };
+  
+  
+  
+  
+  return (
+    <div>
+    <Container fluid className="seccion-tarifas">
+      <Row className="tarifas-container">
+      <img className="background-tarifas" src={fondo1}/>
+      <h2> Ven a escalar con nosotros </h2>
+      <h6> Encuentra el abono que más se adapta a ti</h6>
+      </Row>
+
+      <Row className="tarifas-intro">
+        <h3> Tarifas de acceso para adultos, abonos y clases dirigidas </h3>
+        <div className="imagen-centro">
+            <img src={roco4} alt="Imagen de escalada" />
+        </div>
+      </Row>
+
+      <Row className="tarifas-row">
+        <Col xs={6} md={6} className="col1-tarifas">
+         <div className="tarifa-card">
+          <div className="tarifa-item">
+          <h4>Entradas de día</h4>
+          <h5> 1 día para adultos </h5>
+          <p>Válido durante todo el día hasta que tus brazos no puedan más.</p>
+          </div>
+          <div 
+            className="precios" 
+            onClick={() => handleCheckout('price_1QcqlcQG9VO4iB05PdHXTAeM', '1 día para adultos')}
+          >
+            <span className="precio">13,50 €</span>
+            <FontAwesomeIcon icon={faPaperPlane} className="icono-flecha" />
+          </div>
+
+          <div className="tarifa-item">
+          <h5> Happy hour </h5>
+          <p>También depende de lo que tus brazos te respondan, pero debes entrar entre las 15:00 y las 17:00 </p>
+          </div>
+          <div 
+            className="precios" 
+            onClick={() => handleCheckout('price_1QcqnUQG9VO4iB054FkIspJX', 'Happy Hour')}
+          >
+            <span className="precio">10,50 €</span>
+            <FontAwesomeIcon icon={faPaperPlane} className="icono-flecha" />
+          </div>
+
+
+          <div className="tarifa-item">
+          <h5> Pack 10 entradas para adultos </h5>
+          <p>Sin fecha de caducidad, puedes usarlo cuando te de la gana.</p>
+          </div>
+          <div 
+            className="precios" 
+            onClick={() => handleCheckout('price_1Qcqo7QG9VO4iB052aKk01J3', 'Pack 10 entradas')}
+          >
+            <span className="precio">100 €</span>
+            <FontAwesomeIcon icon={faPaperPlane} className="icono-flecha" />
+          </div>
+        </div>
+        </Col>
+
+        <Col xs={6} md={6} className="col1-tarifas">
+         <div className="tarifa-card">
+          <div className="tarifa-item">
+          <h4>Abonos</h4>
+          <h5> Abono mensual </h5>
+          <p>Ven cuando quieras, las veces que quieras, así no te echamos de menos</p>
+          </div>
+          <div 
+            className="precios" 
+            onClick={() => handleCheckoutSubscription('price_1QdTYXQG9VO4iB05mz8t4Agd', 'Abono mensual adultos')}
+          >
+            <span className="precio">13,50 €</span>
+            <FontAwesomeIcon icon={faPaperPlane} className="icono-flecha" />
+          </div>
+
+          <div className="tarifa-item">
+          <h5> Abono anual </h5>
+          <p>También puedes venir todo lo que quieras, pero por menos dinero </p>
+          </div>
+          <div 
+            className="precios" 
+            onClick={() => handleCheckoutSubscription('price_1QdTZZQG9VO4iB056p4UPEdk', 'Abono anual adultos')}
+          >
+            <span className="precio">13,50 €</span>
+            <FontAwesomeIcon icon={faPaperPlane} className="icono-flecha" />
+          </div>
+
+          <div className="tarifa-item1">
+          <h4>Clases dirigidas</h4>
+          <h5> Uno o dos días por semana </h5>
+          <p>Si quieres que tu progreso como escalador despegue, ven a preguntarnos los horarios de las clases</p>
+          </div>
+        </div>
+        </Col>
+
+        </Row>
+
+        <Row className="tarifas-intro">
+        <h3> El rocódromo para los más pequeños </h3>
+        <p>Los menores de 16 años deberán estar siempre acompañados de un adulto.</p>
+        <div className="imagen-centro">
+            <img src={roco1} alt="Imagen de escalada" />
+        </div>
+      </Row>
+
+      <Row className="tarifas-row">
+        <Col xs={6} md={6} className="col1-tarifas">
+         <div className="tarifa-card">
+          <div className="tarifa-item">
+          <h4>Entradas de día</h4>
+          <h5> 1 día para niños </h5>
+          <p>Los más peques pueden venir a divertirse a cualquier hora.</p>
+          </div>
+          <div 
+            className="precios" 
+            onClick={() => handleCheckout('price_1QcqmcQG9VO4iB05GhGi9Gy7', '1 Entrada de día Niños')}
+          >
+            <span className="precio">10 €</span>
+            <FontAwesomeIcon icon={faPaperPlane} className="icono-flecha" />
+          </div>
+
+          <div className="tarifa-item">
+          <h5> Pack 10 entradas para niños </h5>
+          <p> Como para los mayores, sin fecha de caducidad, pueden venir a cansarse en cualquier momento. </p>
+          </div>
+          <div 
+            className="precios" 
+            onClick={() => handleCheckout('price_1QcqoxQG9VO4iB05OEgxk82Z', 'Pack 10 entradas Niños')}
+          >
+            <span className="precio">80 €</span>
+            <FontAwesomeIcon icon={faPaperPlane} className="icono-flecha" />
+          </div>
+        </div>
+        </Col>
+
+        <Col xs={6} md={6} className="col1-tarifas">
+         <div className="tarifa-card">
+         <div className="tarifa-item">
+         <h4>Diversión escalando</h4>
+          <h5> Grupos y celebraciones </h5>
+          <p>¿Tienes un evento especial o un cumpleaños? ¡Pregúntanos y ven a celebrarlo con nosotros!</p>
+          </div>
+          
+          <div className="tarifa-item1">
+          <h4>Clases dirigidas</h4>
+          <h5> Uno o dos días por semana </h5>
+          <p>Clases en gurpo para después del cole, venid a preguntarnos los horarios de las clases</p>
+          </div>
+        </div>
+        </Col>
+
+        </Row>
+      </Container>
+    </div>
+  )
+}
+
+export default Tarifas

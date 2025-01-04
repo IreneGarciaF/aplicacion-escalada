@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+.seccion-inicio {
+    overflow-x: hidden;
+
+}
+
+.background-header {
+    width: 100%;
+    height: 50vh;
+    object-fit: cover;
+    object-position: 20% 25%;
+    margin: 0;
+    padding:0;
+    overflow-x: hidden;
+
+}
+
+.intro-inicio {
+    display: flex;
+    flex-direction: row;
+    background-color: #d6dbdf;
+}
+
+.intro-inicio h3 {    
+    margin: 2% 0 0 30% ;
+    font-size: 50px;
+    font-weight: 300;
+}
+.intro-inicio h4 {    
+    margin: 2% 0 0 35% ;
+    font-size: 30px;
+    font-weight: 200;
+    color: #1889d4 ;
+}
+
+.intro-inicio p {
+   font-size: 20px;
+   margin: 2% 12%;
+   text-align: center;
+}
+
+.col1-intro {
+    font-family: 'Rubik';
+    margin: 2%;
+    color: #212f3c;
+}
+
+
+.col2-intro {
+    margin: 2%;
+}
+
+.video-intro{
+    width: 70%;
+    height: auto;
+    margin-top: 3%;
+    border-radius: 4%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.info-btn {
+    padding: 10px 40px;
+    margin: 2%  0 0 40% ;
+    border: none;
+    font-size: 14px;
+    background: #1889d4 ;
+    color: white;
+    cursor: pointer;
+    outline: none;
+}
+
+.info-btn:hover {
+    background: #0c9eff;
+}
+
+.col3-inicio {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 30%;
+}
+
+.col4-inicio {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 30%;
+}
+
+.col5-inicio {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 30%;
+}
+
+.tarjetas-container {
+    display: flex;               
+    justify-content: center;   
+    align-items: center;
+    background-color: #b7bdc2;     
+  }
+
+
+.card-link {
+    text-decoration: none;
+    box-shadow: 2px 2px 4px 8px rgba(0, 0, 0, 0.2); 
+    background-color: white;
+    margin: 10% 2%;
+    padding: 3%;
+    width: 30vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 40%;
+    transition: background-color 0.5s ease;
+    text-align: center;
+  }
+
+  .card-link:hover {
+    background-color: #d6dbdf;
+    
+  }
+  
+
+.icono-img {
+    width: 250px;
+    height: auto;
+    border: 4px solid #1889d4;
+    border-radius: 50%;
+    padding: 10%;
+}
+
+.card-link h5 {
+    color: #212f3c;
+    font-family: 'Rubik';
+    font-size: 32px;
+    font-weight: 300;
+}
+
+.card-link p {
+    color: #1889d4;
+    font-family: 'Rubik';
+    font-size: 18px;
+    font-weight: 500;
+    padding: 0% 5%;
+}
