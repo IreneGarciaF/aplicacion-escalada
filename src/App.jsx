@@ -9,6 +9,8 @@ import Tarifas from './Pages/Tarifas';
 import Primero from './Pages/Primero'
 import Galeria from './Pages/Galería'
 import Usuarios from './Pages/Usuarios'
+import Success from './Pages/Success'
+import Cancel from './Pages/Cancel'
 
 function App() {
 
@@ -24,7 +26,9 @@ function App() {
       <Route path="/tarifas" element={<Tarifas />} /> 
       <Route path="/primero" element={<Primero />} />
       <Route path="/galeria" element={<Galeria />} />  
-      <Route path="/usuarios" element={<Usuarios />} />  
+      <Route path="/usuarios" element={<Usuarios />} />
+      <Route path="/success" element={<Success />} />
+      <Route path="/cancel" element={<Cancel />} />  
       </Routes>
       </main>
       </div>

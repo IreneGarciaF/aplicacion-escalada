@@ -1,9 +1,10 @@
-import React from 'react'
-import {Container, Button, Col, Row } from 'react-bootstrap/';
+import React,  { useState, useEffect }  from 'react'
+import {Container, Col, Row } from 'react-bootstrap/';
 import '../Styles/Tarifas.css'
 import { loadStripe } from '@stripe/stripe-js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
+import { getAuth,  onAuthStateChanged  } from "firebase/auth";
 
 
 //imagenes
@@ -11,55 +12,82 @@ import fondo1 from '../assets/Fondo1.jpg'
 import roco4 from '../assets/roco4.jpg'
 import roco1 from '../assets/roco1.jpg'
 
-
-
+const stripePromise = loadStripe('pk_test_51QcqgCQG9VO4iB056SAGDlNBtSlQz3ehdXSEumIduMFBOFwjRGZneW4jfghps0vfrk7S9c2KVCSnkp9sFMYJjxjS00oCVBOAwZ'); 
+ 
+ 
 function Tarifas() {
+  
+  const [userId, setUserId] = useState(null);
+  useEffect(() => {
+    const auth = getAuth();
+    
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserId(user.uid); 
+      } else {
+        setUserId(null); 
+      }
+    });
+  
+    return unsubscribe; 
+  }, []);
 
-  const stripePromise = loadStripe('pk_test_51QcqgCQG9VO4iB056SAGDlNBtSlQz3ehdXSEumIduMFBOFwjRGZneW4jfghps0vfrk7S9c2KVCSnkp9sFMYJjxjS00oCVBOAwZ'); 
 
+
+
+  // Función para manejar el checkout
   const handleCheckout = async (priceId, name) => {
-    const stripe = await stripePromise;
-  
-    // Asegurémonos de que los datos enviados son correctos
-    const items = [
-      {
-        name,
-        priceId: priceId, 
-        quantity: 1,
+  if (!userId) {
+    console.error('userId is missing');
+    return;
+  }
+
+  // Enviar los datos de la compra al backend
+  try {
+    const response = await fetch('http://localhost:3001/create-checkout-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    ];
-  
-    try {
-      const response = await fetch('http://localhost:3001/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ items }),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Error al crear la sesión de pago');
-      }
-  
-      const session = await response.json();
-      
-      // Redirigir al usuario a Stripe
-      const { error } = await stripe.redirectToCheckout({
-        sessionId: session.id,
-      });
-  
-      if (error) {
-        console.error('Error al redirigir al checkout: ', error);
-      }
-    } catch (error) {
-      console.error('Error en el frontend al crear la sesión de pago:', error);
+      body: JSON.stringify({ 
+        userId, // El userId del usuario logueado
+        priceId, // El priceId correspondiente al producto seleccionado
+        name, // El nombre del curso o producto
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al crear la sesión de pago');
     }
-  };
+
+    const session = await response.json();
+
+    // Redirigir al usuario a Stripe Checkout
+    const stripe = await stripePromise;
+    const { error } = await stripe.redirectToCheckout({
+      sessionId: session.id, // Usamos el ID de la sesión de Stripe
+    });
+
+    if (error) {
+      console.error('Error al redirigir al checkout:', error);
+    }
+  } catch (error) {
+    console.error('Error al enviar la solicitud al backend:', error);
+  }
+};
+
+  
 
   // Función para manejar la suscripción
   const handleCheckoutSubscription = async (priceId, name) => {
+
+    const userId = userId; 
     const stripe = await stripePromise;
+
+    if (!userId) {
+      console.error('userId is missing');
+      return;
+    }
   
     const items = [
       {
@@ -100,7 +128,7 @@ function Tarifas() {
   
   
   
-  
+
   return (
     <div>
     <Container fluid className="seccion-tarifas">
@@ -141,7 +169,7 @@ function Tarifas() {
             className="precios" 
             onClick={() => handleCheckout('price_1QcqnUQG9VO4iB054FkIspJX', 'Happy Hour')}
           >
-            <span className="precio">10,50 €</span>
+            <span className="precio">11 €</span>
             <FontAwesomeIcon icon={faPaperPlane} className="icono-flecha" />
           </div>
 
