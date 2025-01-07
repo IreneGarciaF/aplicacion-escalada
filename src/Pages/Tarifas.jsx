@@ -16,6 +16,8 @@ const stripePromise = loadStripe('pk_test_51QcqgCQG9VO4iB056SAGDlNBtSlQz3ehdXSEu
  
  
 function Tarifas() {
+
+  console.log("Firebase conectado y listo para usar");
   
   const [userId, setUserId] = useState(null);
   useEffect(() => {

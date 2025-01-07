@@ -3,14 +3,23 @@ import stripeLib from 'stripe';
 import cors from 'cors'; 
 import admin from 'firebase-admin';
 import bodyParser from 'body-parser';  
-import serviceAccount from './config/rocodromo-71c85-firebase-adminsdk-gqs4r-4bcc46b7e3.json' assert { type: 'json' };
+import dotenv from 'dotenv';
+import fs from 'fs';
 
+
+dotenv.config();
+
+const serviceAccount = JSON.parse(fs.readFileSync(process.env.FIREBASE_SERVICE_ACCOUNT_JSON, 'utf8'));
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
+
 const db = admin.firestore();  
+
+
+
 const endpointSecret = 'whsec_UAdRmIp7LyIIbaX7JIuXigJDrb0JlcN3';
 const stripe = stripeLib('sk_test_51QcqgCQG9VO4iB05bb8o5yxEw7lxBmIXT25bpzX2LTWpqCWCmegN3ATnIJlBGT8eqPoMesRzj1xBSPM2rf9lxk5v00cvAfpshR');  
 const app = express();
